@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  go_currency_converter:
+    build: .
+    image: go-currency-converter:latest
+    container_name: go_currency_converter
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - 8000:8000
+    networks:
+      - go-currency-converter-network
+  
+  go_currency_converter_db:
+    container_name: go_currency_converter_db
+    image: postgres:latest
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - go-currency-converter-network
+
+networks:
+  go-currency-converter-network:
+    driver: bridge
